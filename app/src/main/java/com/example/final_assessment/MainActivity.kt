@@ -6,9 +6,8 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.CoroutineScope
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -41,11 +40,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun login(username: String, password: String) {
-        val apiService = RetrofitInstance.retrofit.create(Api::class.java)
-
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             try {
-                val loginResponse = apiService.login(LoginRequest(username, password))
+                val loginResponse = withContext(Dispatchers.IO) {
+                    val apiService = RetrofitInstance.retrofit.create(Api::class.java)
+                    apiService.login(LoginRequest(username, password))
+                }
+
                 val keypass = loginResponse.keypass
 
                 // Now move to the dashboard
@@ -56,9 +57,7 @@ class MainActivity : AppCompatActivity() {
 
             } catch (e: Exception) {
                 Log.e("MainActivity", "Login failed", e)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@MainActivity, "Login failed: ${e.message}", Toast.LENGTH_LONG).show()
-                }
+                Toast.makeText(this@MainActivity, "Login failed: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
     }

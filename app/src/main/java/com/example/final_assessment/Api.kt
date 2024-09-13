@@ -10,8 +10,8 @@ interface Api {
     @POST("/footscray/auth")
     suspend fun login (@Body loginRequest: LoginRequest): LoginResponse
 
-    /*@GET("/dashboard/{keypass}")
-    suspend fun getDashboard(@Path("keypass") keypass: String): DashboardResponse*/
+    @GET("/dashboard/{keypass}")
+    suspend fun getDashboardEntities(@Path("keypass") keypass: String): DashboardResponse
 
 
 

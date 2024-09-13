@@ -7,3 +7,7 @@ data class LoginRequest(
 data class LoginResponse(
     val keypass: String
 )
+data class DashboardResponse(
+    val entities: List<Entity>,
+    val entityTotal: Int
+)
