@@ -31,9 +31,9 @@ class DetailsActivity : AppCompatActivity() {
             val description = intent.getStringExtra("ENTITY_DESCRIPTION")
 
             sportNameTextView.text = sportName
-            playerCountTextView.text = "Players: $playerCount"
-            fieldTypeTextView.text = "Field: $fieldType"
-            olympicSportTextView.text = "Olympic Sport: ${if (olympicSport) "Yes" else "No"}"
+            playerCountTextView.text = " $playerCount"
+            fieldTypeTextView.text = " $fieldType"
+            olympicSportTextView.text = " ${if (olympicSport) "Yes" else "No"}"
             descriptionTextView.text = description
         } else {
             // Handle the case where intent is null

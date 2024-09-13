@@ -5,14 +5,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class Dashboard : AppCompatActivity() {
+
+    @Inject
+    lateinit var api: Api
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var entityAdapter: EntityAdapter
@@ -39,34 +43,34 @@ class Dashboard : AppCompatActivity() {
     }
 
     private fun fetchEntities(keypass: String) {
-        val apiService = RetrofitInstance.retrofit.create(Api::class.java)
-
-        CoroutineScope(Dispatchers.IO).launch {
+        lifecycleScope.launch {
             try {
-                val response = apiService.getDashboardEntities(keypass)
+                val response = api.getDashboardEntities(keypass)
                 val entities = response.entities
 
-                withContext(Dispatchers.Main) {
-                    entityList.clear()  // Clear the existing list
-                    entityList.addAll(entities)
-                    entityAdapter.notifyDataSetChanged()
-                }
+                entityList.clear()  // Clear the existing list
+                entityList.addAll(entities)
+                entityAdapter.notifyDataSetChanged()
 
             } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@Dashboard, "Failed to load entities: ${e.message}", Toast.LENGTH_LONG).show()
-                }
+                Toast.makeText(this@Dashboard, "Failed to load entities: ${e.message}", Toast.LENGTH_LONG).show()
+                // You can also log the error here
+                // Log.e("Dashboard", "Failed to load entities", e)
             }
         }
     }
 
-    private fun openDetailsScreen(entity: Entity) {
-        val intent = Intent(this, DetailsActivity::class.java)
-        intent.putExtra("ENTITY_SPORT_NAME", entity.sportName)
-        intent.putExtra("ENTITY_PLAYER_COUNT", entity.playerCount)
-        intent.putExtra("ENTITY_FIELD_TYPE", entity.fieldType)
-        intent.putExtra("ENTITY_OLYMPIC_SPORT", entity.olympicSport)
-        intent.putExtra("ENTITY_DESCRIPTION", entity.description)
-        startActivity(intent)
+    private fun openDetailsScreen(entity: Entity?) {
+        if (entity != null) {
+            val intent = Intent(this, DetailsActivity::class.java)
+            intent.putExtra("ENTITY_SPORT_NAME", entity.sportName)
+            intent.putExtra("ENTITY_PLAYER_COUNT", entity.playerCount)
+            intent.putExtra("ENTITY_FIELD_TYPE", entity.fieldType)
+            intent.putExtra("ENTITY_OLYMPIC_SPORT", entity.olympicSport)
+            intent.putExtra("ENTITY_DESCRIPTION", entity.description)
+            startActivity(intent)
+        } else {
+            Toast.makeText(this, "Entity is null", Toast.LENGTH_SHORT).show()
+        }
     }
 }

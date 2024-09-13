@@ -8,11 +8,17 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var api: Api
 
     private lateinit var etPassword: EditText
     private lateinit var etUsername: EditText
@@ -20,7 +26,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
 
         etUsername = findViewById(R.id.etUsername)
@@ -43,8 +48,7 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val loginResponse = withContext(Dispatchers.IO) {
-                    val apiService = RetrofitInstance.retrofit.create(Api::class.java)
-                    apiService.login(LoginRequest(username, password))
+                    api.login(LoginRequest(username, password))
                 }
 
                 val keypass = loginResponse.keypass
