@@ -24,20 +24,23 @@ class DetailsActivity : AppCompatActivity() {
 
         val intent = intent
         if (intent != null) {
+            //The intent object contains the data passed from the dashboard activity
             val sportName = intent.getStringExtra("ENTITY_SPORT_NAME")
             val playerCount = intent.getIntExtra("ENTITY_PLAYER_COUNT", 0)
             val fieldType = intent.getStringExtra("ENTITY_FIELD_TYPE")
             val olympicSport = intent.getBooleanExtra("ENTITY_OLYMPIC_SPORT", false)
             val description = intent.getStringExtra("ENTITY_DESCRIPTION")
-
+            //displaying the data in textviews
             sportNameTextView.text = sportName
             playerCountTextView.text = " $playerCount"
             fieldTypeTextView.text = " $fieldType"
             olympicSportTextView.text = " ${if (olympicSport) "Yes" else "No"}"
             descriptionTextView.text = description
+
+
         } else {
             // Handle the case where intent is null
-            // You can display an error message or take alternative actions
+
             sportNameTextView.text = "No data available"
             playerCountTextView.text = ""
             fieldTypeTextView.text = ""

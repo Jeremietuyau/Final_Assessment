@@ -8,7 +8,7 @@ import com.example.final_assessment.R
 
 class EntityAdapter(
     private val entities: List<Entity>,
-    private val onItemClick: (Entity) -> Unit
+    private val onItemClick: (Entity) -> Unit,
 ) : RecyclerView.Adapter<EntityAdapter.EntityViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EntityViewHolder {
